@@ -2,7 +2,7 @@ import React from "react";
 import { programs } from "./data/data";
 const ProgramList = () => {
   return (
-    <div className="w-full flex flex-col  bg-black items-center">
+    <div id="programs" className="w-full flex flex-col  bg-black items-center">
       <div className="w-1/2 flex flex-col px-8">
         <h1 className="text-3xl md:text-4xl font-bold mb-4 text-white flex items-center justify-center">
           Our Programs
@@ -16,7 +16,10 @@ const ProgramList = () => {
       </div>
       <div className="w-1/2 flex flex-col px-8 py-4  gap-8 md:flex-row">
         {programs.map((item) => (
-          <div className="w-full flex flex-col bg-gray-800 rounded-xl p-3 md:flex-col">
+          <div
+            key={item.id}
+            className="w-full flex flex-col bg-gray-800 rounded-xl p-3 md:flex-col"
+          >
             <div className="mb-4 text-white text-3xl">{item.icon}</div>
             <h2 className="text-xl font-semibold mb-2 text-white">
               {item.title}
