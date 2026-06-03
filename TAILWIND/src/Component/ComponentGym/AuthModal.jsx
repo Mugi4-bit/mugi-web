@@ -1,15 +1,33 @@
-import React from "react";
-import { HiX } from "react-icons/hi";
+import React, { useEffect, useState } from "react";
 import { authContent } from "./data/data";
 
-const AuthModal = ({ open, mode = "login", onClose, onSwitchMode }) => {
+const AuthModal = ({
+  open,
+  mode = "login",
+  message = "",
+  onClose,
+  onSubmit,
+  onSwitchMode,
+}) => {
+  const content = authContent[mode] || authContent.login;
+  const [formValues, setFormValues] = useState({});
+
+  useEffect(() => {
+    setFormValues({});
+  }, [mode, open]);
+
   if (!open) return null;
 
-  const content = authContent[mode] || authContent.login;
+  const handleChange = (label, value) => {
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [label]: value,
+    }));
+  };
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 "
+      className="fixed inset-0 z-[90] flex items-center justify-center bg-black/50 "
       onClick={onClose}
     >
       <div
@@ -31,25 +49,37 @@ const AuthModal = ({ open, mode = "login", onClose, onSwitchMode }) => {
           {content.description}
         </p>
 
-        <div className="mt-8 space-y-6">
+        <form
+          className="mt-8 space-y-6"
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSubmit?.(formValues);
+          }}
+        >
           {content.fields.map((field) => (
             <label key={field.label} className="block text-sm text-slate-300">
               {field.label}
               <input
                 type={field.type}
                 placeholder={field.placeholder}
+                value={formValues[field.label] || ""}
+                onChange={(e) => handleChange(field.label, e.target.value)}
                 className="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-900 px-4 py-3 text-white outline-none transition focus:border-lime-400"
               />
             </label>
           ))}
 
+          {message && (
+            <p className="text-sm font-semibold text-red-400">{message}</p>
+          )}
+
           <button
-            type="button"
+            type="submit"
             className="w-full rounded-2xl bg-lime-400 px-6 py-3 text-base font-semibold text-black transition hover:bg-lime-300"
           >
             {content.primaryLabel}
           </button>
-        </div>
+        </form>
 
         <p className="mt-6 text-center text-sm text-slate-400">
           {content.secondaryText}{" "}

@@ -1,21 +1,23 @@
 import React from "react";
 import { HiMenu, HiX } from "react-icons/hi";
 import { useState } from "react";
-import AuthModal from "./AuthModal";
 import AvailableProgramsModal from "./AvailableProgramsModal";
 
 // Logo
 // Sign Up Login
 // Home Products Solutions Pricing Contact
 const Topbar = ({
+  currentUser = null,
   activePrograms = [],
   onJoinProgram = () => {},
   onCancelProgram = () => {},
+  onOpenAuth = () => {},
+  onLogout = () => {},
+  onUpdateAccount = () => {},
 }) => {
   const [activeLink, setActiveLink] = useState("true");
-  const [authMode, setAuthMode] = useState("login");
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProgramOpen, setIsProgramOpen] = useState(false);
+  const accountButtonLabel = currentUser?.fullName || "My Programs";
 
   return (
     <div>
@@ -35,30 +37,42 @@ const Topbar = ({
           </div>
         </div>
         <div className="flex gap-4 mr-60 md:block sm:hidden">
-          <button
-            className="text-green-300 w-28 h-10 rounded-xl bg-black border-2 border-gray-700 font-bold hover:bg-slate-900"
-            onClick={() => setIsProgramOpen(true)}
-          >
-            My Programs
-          </button>
-          <button
-            onClick={() => {
-              setAuthMode("login");
-              setIsAuthModalOpen(true);
-            }}
-            className="bg-green-500 w-25 h-10 rounded-xl hover:bg-green-600 transition font-bold"
-          >
-            Login
-          </button>
-          <button
-            onClick={() => {
-              setAuthMode("signup");
-              setIsAuthModalOpen(true);
-            }}
-            className="bg-black text-white w-28 h-10 rounded-xl hover:bg-slate-900 transition ml-3 border-gray-700 border-2 font-bold"
-          >
-            Sign Up
-          </button>
+          {currentUser ? (
+            <>
+              <button
+                className="text-green-300 w-28 h-10 rounded-xl bg-black border-2 border-gray-700 font-bold hover:bg-slate-900"
+                onClick={() => setIsProgramOpen(true)}
+                title="Open my programs"
+              >
+                <span className="block truncate px-2">{accountButtonLabel}</span>
+              </button>
+              <button
+                onClick={onLogout}
+                className="bg-black text-red-300 w-28 h-10 rounded-xl hover:bg-slate-900 transition ml-3 border-gray-700 border-2 font-bold"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => {
+                  onOpenAuth("login");
+                }}
+                className="bg-green-500 w-25 h-10 rounded-xl hover:bg-green-600 transition font-bold"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => {
+                  onOpenAuth("signup");
+                }}
+                className="bg-black text-white w-28 h-10 rounded-xl hover:bg-slate-900 transition ml-3 border-gray-700 border-2 font-bold"
+              >
+                Sign Up
+              </button>
+            </>
+          )}
         </div>
         {activeLink ? (
           <HiX
@@ -80,46 +94,56 @@ const Topbar = ({
           <a href="#">Pricing</a>
           <a href="#">Contact</a>
           <div className="flex flex-row">
-            <button
-              onClick={() => setIsProgramOpen(true)}
-              className="text-green-300 w-28 h-10 rounded-xl bg-black border-2 border-gray-700 font-bold hover:bg-slate-900"
-            >
-              My Programs
-            </button>
-            <button
-              onClick={() => {
-                setAuthMode("login");
-                setIsAuthModalOpen(true);
-              }}
-              className="bg-green-500 w-25 h-10 rounded-xl hover:bg-green-600 transition font-bold text-black"
-            >
-              Login
-            </button>
-            <button
-              onClick={() => {
-                setAuthMode("signup");
-                setIsAuthModalOpen(true);
-              }}
-              className="bg-black text-white w-28 h-10 rounded-xl hover:bg-slate-900 transition ml-3 border-2 border-gray-700 font-bold"
-            >
-              Sign Up
-            </button>
+            {currentUser ? (
+              <>
+                <button
+                  onClick={() => setIsProgramOpen(true)}
+                  className="text-green-300 w-28 h-10 rounded-xl bg-black border-2 border-gray-700 font-bold hover:bg-slate-900"
+                  title="Open my programs"
+                >
+                  <span className="block truncate px-2">
+                    {accountButtonLabel}
+                  </span>
+                </button>
+                <button
+                  onClick={onLogout}
+                  className="bg-black text-red-300 w-28 h-10 rounded-xl hover:bg-slate-900 transition ml-3 border-2 border-gray-700 font-bold"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => {
+                    onOpenAuth("login");
+                  }}
+                  className="bg-green-500 w-25 h-10 rounded-xl hover:bg-green-600 transition font-bold text-black"
+                >
+                  Login
+                </button>
+                <button
+                  onClick={() => {
+                    onOpenAuth("signup");
+                  }}
+                  className="bg-black text-white w-28 h-10 rounded-xl hover:bg-slate-900 transition ml-3 border-2 border-gray-700 font-bold"
+                >
+                  Sign Up
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}
 
-      <AuthModal
-        open={isAuthModalOpen}
-        mode={authMode}
-        onClose={() => setIsAuthModalOpen(false)}
-        onSwitchMode={(mode) => setAuthMode(mode)}
-      />
       <AvailableProgramsModal
         isOpen={isProgramOpen}
         onClose={() => setIsProgramOpen(false)}
         activePrograms={activePrograms}
         onJoinProgram={onJoinProgram}
         onCancelProgram={onCancelProgram}
+        currentUser={currentUser}
+        onUpdateAccount={onUpdateAccount}
       />
     </div>
   );

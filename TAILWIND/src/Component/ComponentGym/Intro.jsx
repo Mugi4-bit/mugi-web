@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import introImage from "./GymImg/introImage.avif";
 import { HiStar, HiArrowSmRight } from "react-icons/hi";
 import ProgrammingModal from "./Banner";
+import PlanModal from "./PlanModal";
 
 const Intro = ({ activePrograms = [], onJoinProgram = () => {} }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
 
   return (
     <div className="w-full md:flex-row flex sm:flex-col py-8 px-4 bg-black">
@@ -22,11 +24,14 @@ const Intro = ({ activePrograms = [], onJoinProgram = () => {} }) => {
         <div className="mt:8 p-4 flex gap-4 w-2/3">
           <button
             onClick={() => setIsModalOpen(true)}
-            className="bg-green-600  text-black font-bold px-8 py-4 rounded-xl hover:bg-green-700 transition"
+            className="bg-green-600 text-black font-bold px-8 py-4 rounded-xl hover:bg-green-700 transition"
           >
             Start today
           </button>
-          <button className="bg-black-600  text-white font-bold px-8 py-4 rounded-xl shadow-sm shadow-white">
+          <button
+            onClick={() => setIsPlanModalOpen(true)}
+            className="bg-slate-800 text-white font-bold px-8 py-4 rounded-xl shadow-sm shadow-white hover:bg-slate-700 transition"
+          >
             View plans
           </button>
         </div>
@@ -41,6 +46,10 @@ const Intro = ({ activePrograms = [], onJoinProgram = () => {} }) => {
         onClose={() => setIsModalOpen(false)}
         activePrograms={activePrograms}
         onJoinProgram={onJoinProgram}
+      />
+      <PlanModal
+        isOpen={isPlanModalOpen}
+        onClose={() => setIsPlanModalOpen(false)}
       />
     </div>
   );
